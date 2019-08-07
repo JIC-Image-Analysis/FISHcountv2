@@ -18,12 +18,14 @@ class FISHImage(object):
 
         if nuclear_channel_first:
             nuclei = ids.get_stack(image_name, series_name, 0, 0)
+            probe_channels = range(1, 1+n_probe_channels)
         else:
             nuclei = ids.get_stack(image_name, series_name, 0, n_channels-1)
+            probe_channels = range(0, n_probe_channels)
 
         probes = []
-        for n in range(n_probe_channels):
-            probes.append(ids.get_stack(image_name, series_name, 0, n+1))
+        for n in probe_channels:
+            probes.append(ids.get_stack(image_name, series_name, 0, n))
 
 
         return cls(probes, nuclei)

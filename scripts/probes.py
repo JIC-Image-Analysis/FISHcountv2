@@ -2,15 +2,25 @@ from skimage.measure import label, regionprops
 import numpy as np
 
 from skimage.draw import circle_perimeter
-from skimage.feature import match_template
+from skimage.feature import match_template as _match_template
 from skimage.filters import sobel
 from skimage.morphology import disk
 
 from dtoolbioimage import scale_to_uint8, Image
 
+import ilogging
 
+from transformation import create_transformation
+
+
+@create_transformation
 def find_edges(ndarray):
     return sobel(ndarray)
+
+
+@create_transformation
+def match_template(*args, **kwargs):
+    return _match_template(*args, **kwargs)
 
 
 def make_stage1_template():
@@ -50,7 +60,7 @@ def find_probe_locations(fishimage, n_probe=0):
 
     return centroids
 
-
+@create_transformation
 def visualise_probe_locations(max_proj, centroids):
     canvas = np.dstack(3 * [scale_to_uint8(max_proj)])
 

@@ -1,13 +1,12 @@
 """Count fluorescent probes and assign to cells."""
 
 import click
+import logging
 
 from ddcache import ids_from_fpath_with_cache
 
 from dataloader import FISHImage
-from segmentation import segment_fishimage
-from probes import find_probe_locations
-from annotation import generate_annotated_image
+from process import find_probes_segment_and_create_annotation
 
 
 def ids_from_image_fpath(image_fpath):
@@ -19,7 +18,12 @@ def ids_from_image_fpath(image_fpath):
 @click.command()
 @click.argument('image_fpath')
 @click.option('--nuclear-channel-first', default=False, is_flag=True)
-def main(image_fpath, nuclear_channel_first):
+@click.option('--probe-channel', default=1, type=int)
+def main(image_fpath, nuclear_channel_first, probe_channel):
+
+    logger = logging.getLogger("FISHCountv2")
+    logging.basicConfig(level=logging.INFO)
+
     ids = ids_from_image_fpath(image_fpath)
 
     image_name, series_name = ids.get_image_series_name_pairs()[0]
@@ -31,24 +35,10 @@ def main(image_fpath, nuclear_channel_first):
         nuclear_channel_first
     )
 
-    import numpy as np
-    from dtoolbioimage import Image
-    max_proj = np.max(fishimage.probes[0], axis=2).view(Image)
-    np.max(fishimage.nuclei, axis=2).view(Image).save('nuclei.png')
+    logger.info(f"Loaded image with {len(fishimage.probes)} probe channels")
+    logger.info(f"Counting probes for probe channel {probe_channel}")
 
-    segmentation = segment_fishimage(fishimage)
-    segmentation.pretty_color_image.view(Image).save("pci.png")
-
-    centroids = find_probe_locations(fishimage)
-    centroids_tuple = set([tuple(c) for c in centroids])
-
-    print(fishimage.nuclei.metadata.PhysicalSizeX)
-
-    annotated_image = generate_annotated_image(max_proj, segmentation, centroids_tuple)
-
-    annotated_image.save('output.png')
-
-
+    find_probes_segment_and_create_annotation(fishimage, probe_channel-1)
 
 
 if __name__ == "__main__":

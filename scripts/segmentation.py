@@ -21,10 +21,18 @@ from skimage.segmentation import watershed
 from dtoolbioimage.segment import Segmentation
 
 
+import ilogging
+from transformation import create_transformation
+
+
+equalize_adapthist = create_transformation(equalize_adapthist)
+
+
 def norm(im):
     return (im - im.min()) / (im.max() - im.min())
 
 
+@create_transformation
 def nuclear_stack_to_segmentation_seeds(nuclear_stack):
     ks = 16  # adaptive histogram kernel size
     bs = 151  # local thresholding block size
