@@ -7,10 +7,9 @@ from skimage.filters import sobel
 from skimage.morphology import disk
 
 from dtoolbioimage import scale_to_uint8, Image
+from dtoolbioimage import ilogging
 
-import ilogging
-
-from transformation import create_transformation
+from dtoolbioimage.transformation import create_transformation
 
 
 @create_transformation

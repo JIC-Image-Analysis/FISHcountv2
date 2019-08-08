@@ -19,10 +19,8 @@ from skimage.morphology import (
 from skimage.segmentation import watershed
 
 from dtoolbioimage.segment import Segmentation
-
-
-import ilogging
-from transformation import create_transformation
+from dtoolbioimage import ilogging
+from dtoolbioimage.transformation import create_transformation
 
 
 equalize_adapthist = create_transformation(equalize_adapthist)

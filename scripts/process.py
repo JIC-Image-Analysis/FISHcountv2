@@ -1,7 +1,7 @@
 import numpy as np
 from dtoolbioimage import Image
 
-import ilogging
+from dtoolbioimage import ilogging
 
 from segmentation import segment_fishimage
 from probes import find_probe_locations, visualise_probe_locations
