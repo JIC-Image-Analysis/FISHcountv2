@@ -8,7 +8,6 @@ from skimage.morphology import disk
 
 from dtoolbioimage import scale_to_uint8, Image
 from dtoolbioimage import ilogging
-
 from dtoolbioimage.transformation import create_transformation
 
 
@@ -47,9 +46,11 @@ def make_stage2_template(fishimage, n_probe=0):
     return better_template
 
 
-def find_probe_locations(fishimage, n_probe=0):
+def find_probe_locations(fishimage, n_probe=0, template=None):
 
-    template = make_stage2_template(fishimage)
+    if template is None:
+        template = make_stage2_template(fishimage)
+        
     max_proj = np.max(fishimage.probes[n_probe], axis=2)
     edge_image = find_edges(max_proj)
     match_result = match_template(edge_image, template, pad_input=True)

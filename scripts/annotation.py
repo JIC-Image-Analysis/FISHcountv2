@@ -24,8 +24,10 @@ def generate_annotated_image(max_proj, segmentation, centroids_tuple, area_scale
     for rid in rids:
         region_positions = set(zip(*np.where(segmentation == rid)))
         region_centroids = region_positions & centroids_tuple
-        r, c = list(map(int, np.array(list(region_centroids)).mean(axis=0)))
         n_probes = len(region_centroids)
+
+        r, c = list(map(int, np.array(list(region_positions)).mean(axis=0)))
+
         area = len(region_positions)
         area_microns = int(area * area_scale)
         area_label = str(area_microns) + 'µm'
