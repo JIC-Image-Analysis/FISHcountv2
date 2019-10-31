@@ -39,4 +39,29 @@ def generate_annotated_image(max_proj, segmentation, centroids_tuple, area_scale
         draw.text((c-area_label_offset, r+r_offset), area_label, fill=(255, 255, 0), font=font)
 
     annotated_as_array = np.array(annotated)
+
+    return annotated_as_array.view(dbiImage)
+
+
+def generate_label_image(max_proj, nuclear_proj, segmentation, centroids_tuple, area_scale=1):
+    border_image = scale_to_uint8(mark_boundaries(scale_to_uint8(max_proj), segmentation, color=(1, 0, 0)))
+    border_image[:,:,2] = scale_to_uint8(nuclear_proj)
+
+    print(border_image.shape)
+    annotated = Image.fromarray(border_image)
+
+    draw = ImageDraw.Draw(annotated)
+    font_size = 20
+    font = ImageFont.truetype(FONT_PATH, font_size)
+
+    rids = set(np.unique(segmentation)) - set([0])
+    for n, rid in enumerate(rids):
+        region_positions = set(zip(*np.where(segmentation == rid)))
+
+        r, c = list(map(int, np.array(list(region_positions)).mean(axis=0)))
+
+        draw.text((c-10, r-10), str(rid), fill=(255, 255, 255), font=font)
+
+    annotated_as_array = np.array(annotated)
+
     return annotated_as_array.view(dbiImage)

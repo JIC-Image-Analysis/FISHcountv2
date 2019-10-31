@@ -38,7 +38,16 @@ def main(image_fpath, nuclear_channel_first, probe_channel):
     logger.info(f"Loaded image with {len(fishimage.probes)} probe channels")
     logger.info(f"Counting probes for probe channel {probe_channel}")
 
-    find_probes_segment_and_create_annotation(fishimage, probe_channel-1)
+    template = None
+    image_output_fpath = 'counts.png'
+    csv_output_fpath = 'counts.csv'
+    find_probes_segment_and_create_annotation(
+        fishimage,
+        probe_channel-1,
+        template,
+        image_output_fpath,
+        csv_output_fpath
+    )
 
 
 if __name__ == "__main__":
